@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IdolMasterCode | Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- RESET Y BASE --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #0f0f0f;
+            color: #fff;
+            overflow: hidden; /* Evita scroll innecesario */
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* --- FONDO ANIME CHILL --- */
+        .bg-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+            filter: brightness(0.3) blur(3px); /* Un pelito más oscuro que antes (era 0.4) */
+            transition: filter 1s ease;
+        }
+
+        /* Mantengo la ruta local. Pon tu imagen como fondo.jpg en la misma carpeta */
+        .bg-image {
+            background-image: url('./wall.png'); 
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* --- PANTALLA DE ENTRADA (OVERLAY) --- */
+        #overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1s ease;
+        }
+
+        .enter-btn {
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            color: #fff;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 30px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            transition: all 0.3s ease;
+            animation: pulse 2s infinite;
+        }
+
+        .enter-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #fff;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+        }
+
+        /* --- CONTENEDOR PRINCIPAL (GLASSMORPHISM) --- */
+        .main-container {
+            width: 90%;
+            max-width: 600px;
+            /* Oscurecido ligeramente la base y la opacidad */
+            background: rgba(15, 15, 20, 0.75); 
+            backdrop-filter: blur(15px); /* Efecto Blur potente */
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            opacity: 0; /* Empieza invisible */
+            transform: translateY(20px);
+            transition: all 1s ease;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            
+            /* Animación suave de flotación */
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* --- TIPOGRAFÍA Y ESTILOS --- */
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 5px;
+            background: linear-gradient(90deg, #fff, #a29bfe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            /* Animación de respiración al brillo */
+            animation: breatheGlow 4s ease-in-out infinite;
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            color: #ccc;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+            font-weight: 300;
+        }
+
+        /* --- GRID DE ENLACES --- */
+        .grid-section {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            text-align: left;
+            font-size: 0.8rem;
+            color: #888;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 5px;
+        }
+
+        .link-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px 20px;
+            border-radius: 12px;
+            text-decoration: none;
+            color: #fff;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .link-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+            border-color: rgba(162, 155, 254, 0.4);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .link-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .link-content i {
+            font-size: 1.2rem;
+            color: #a29bfe;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #00b894; /* Verde online */
+            border-radius: 50%;
+            box-shadow: 0 0 5px #00b894;
+        }
+
+        /* --- CONTROL DE MÚSICA --- */
+        .music-control {
+            margin-top: 20px;
+            font-size: 0.8rem;
+            color: #666;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        .music-control:hover { color: #fff; }
+
+        /* --- ANIMACIONES --- */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.8; }
+        }
+
+        /* Animación de respiración Lofi para el título */
+        @keyframes breatheGlow {
+            0%, 100% { 
+                filter: drop-shadow(0 0 5px rgba(169, 130, 255, 0.3)); 
+            }
+            50% { 
+                filter: drop-shadow(0 0 20px rgba(169, 130, 255, 0.9)); 
+            }
+        }
+
+        /* Clase para mostrar el contenido */
+        .visible {
+            opacity: 1 !important;
+            transform: translateY(0) !important;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-video bg-image"></div>
+
+    <div id="overlay">
+        <button class="enter-btn" onclick="enterSite()">Enter</button>
+    </div>
+
+    <div class="main-container" id="mainContent">
+        
+        <h1>IdolMasterCode</h1> <p class="subtitle">FULL STACK DEVELOPER & GAMER</p>
+
+        <div class="section-title">Proyectos</div>
+        <div class="grid-section">
+            <a href="https://TU-USUARIO.github.io/REPO-CHIVAS/" target="_blank" class="link-card">
+                <div class="link-content">
+                    <i class="fa-solid fa-futbol"></i>
+                    <span>Chivas Goal Archive</span>
+                </div>
+                <i class="fa-solid fa-chevron-right" style="font-size: 0.8rem; opacity: 0.5;"></i>
+            </a>
+
+            <a href="https://TU-USUARIO.github.io/REPO-BLUE-ARCHIVE/" target="_blank" class="link-card">
+                <div class="link-content">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                    <span>BA Student Recruitment</span>
+                </div>
+                <i class="fa-solid fa-chevron-right" style="font-size: 0.8rem; opacity: 0.5;"></i>
+            </a>
+        </div>
+
+        <div class="section-title">Social & Gaming</div>
+        <div class="grid-section">
+            <a href="https://steamcommunity.com/id/lbrujitas13/" target="_blank" class="link-card">
+                <div class="link-content">
+                    <i class="fa-brands fa-steam"></i>
+                    <span>Steam</span>
+                </div>
+                <div class="status-dot" title="Online"></div>
+            </a>
+            
+            <a href="https://discord.com/users/538978497784315904" target="_blank" class="link-card">
+                <div class="link-content">
+                    <i class="fa-brands fa-discord"></i>
+                    <span>Discord</span>
+                </div>
+                <span style="font-size: 0.7rem; color: #888;">@lulu1313</span>
+            </a>
+
+            <a href="https://github.com/Idolmastercode" target="_blank" class="link-card">
+                <div class="link-content">
+                    <i class="fa-brands fa-github"></i>
+                    <span>GitHub</span>
+                </div>
+            </a>
+        </div>
+
+        <audio id="bgMusic" loop>
+            <source src="https://cdn.pixabay.com/audio/2022/05/27/audio_1808fbf07a.mp3" type="audio/mp3">
+        </audio>
+
+        <div class="music-control" onclick="toggleMusic()">
+            <i class="fa-solid fa-music"></i> <span id="musicText">Music Paused</span>
+        </div>
+
+    </div>
+
+    <script>
+        const audio = document.getElementById("bgMusic");
+        const overlay = document.getElementById("overlay");
+        const mainContent = document.getElementById("mainContent");
+        const bg = document.querySelector(".bg-video");
+
+        function enterSite() {
+            // Desvanecer overlay
+            overlay.style.opacity = '0';
+            setTimeout(() => {
+                overlay.style.display = 'none';
+            }, 1000);
+
+            // Mostrar contenido principal
+            mainContent.classList.add('visible');
+
+            // Quitar un poco de blur al fondo al entrar
+            bg.style.filter = "brightness(0.3) blur(0px)"; /* Mantenemos el brillo 0.3 */
+
+            // Iniciar música suavemente y actualizar el texto
+            audio.volume = 0.4; // 40% de volumen
+            audio.play();
+            document.getElementById("musicText").innerText = "Music Play";
+            document.querySelector(".fa-music").style.opacity = "1";
+        }
+
+        function toggleMusic() {
+            if (audio.paused) {
+                audio.play();
+                document.getElementById("musicText").innerText = "Music Play";
+                document.querySelector(".fa-music").style.opacity = "1";
+            } else {
+                audio.pause();
+                document.getElementById("musicText").innerText = "Music Paused";
+                document.querySelector(".fa-music").style.opacity = "0.5";
+            }
+        }
+    </script>
+</body>
+</html>
