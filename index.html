@@ -216,6 +216,42 @@
             opacity: 1 !important;
             transform: translateY(0) !important;
         }
+
+        /* =========================================
+           SOLUCIÓN PARA MÓVILES (Hace el cuadrito más chiquito)
+           ========================================= */
+        @media (max-width: 600px) {
+            .main-container {
+                padding: 25px 20px; /* Menos espacio adentro para que quepa todo */
+                max-height: 90vh; /* Evita que el cuadro sea más alto que la pantalla */
+                overflow-y: auto; /* Agrega scroll solo dentro del cuadro si la pantalla es MUY pequeña */
+            }
+            
+            h1 {
+                font-size: 1.8rem; /* Letra más chica */
+            }
+
+            .subtitle {
+                font-size: 0.75rem;
+                margin-bottom: 20px;
+            }
+
+            .grid-section {
+                gap: 10px; /* Menos espacio entre los botones */
+                margin-bottom: 20px;
+            }
+
+            .link-card {
+                padding: 12px 15px; /* Botones un poco más delgados */
+            }
+            
+            /* Ajuste sutil al efecto float en móvil para evitar bugs visuales con el scroll */
+            @keyframes float {
+                0% { transform: translateY(0px); }
+                50% { transform: translateY(-5px); }
+                100% { transform: translateY(0px); }
+            }
+        }
     </style>
 </head>
 <body>
@@ -324,6 +360,4 @@
         }
     </script>
 </body>
-
 </html>
-
